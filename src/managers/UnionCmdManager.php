@@ -56,7 +56,7 @@ class UnionCmdManager
                         $entity->setSpeed(new Vector3($speed->getX(), $speed->getY(), $speed->getZ()));
                         $motion = $moveInfo->getMotionInfo()->getPos();
                         /*
-                         * uh fast hack for movement bug #blametiming, still fuckery but thats what we can do right now...
+                         * uh fast hack for movement bug #blamephp, still fuckery but thats what we can do right now...
                          */
                         $entity->setMotion(new Vector3($motion->getX() + $speed->getX(), $motion->getY(), $motion->getZ() + $speed->getZ()));
                         if ($entity instanceof Avatar) {
