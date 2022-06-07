@@ -84,10 +84,12 @@ class DispatchServer
             $rsp->setRegionInfo($regionInfo);
             $rsp->setClientRegionCustomConfigEncrypted($customConfig->toString());
             if (isset($config['version']) && (str_contains($config['version'], "2.7.5") || str_contains($config['version'], "2.8"))) {
-                $regionInfo->setSecretKey("0");
+                $regionInfo->setSecretKey(0);
+                openssl_public_encrypt($rsp->serializeToString(), $encrypted, Crypto::$publicKey, OPENSSL_PKCS1_PADDING);
+
                 return new Response(200, ["Content-Type" => "application/json"], json_encode([
-                    "content" => 'ZvS5o2dnygY7qmbpQzY+Yz1ULRE3qObYHPMCNVF2ws3gbav5grbKGqbfVs48SxVgvpDcYJsZb85N7rxvVLXzBw/mjDRK68XZgJXvcPsYixgxgu2KIRZGuMsgwJRsP//2M+Ki7FmocjknfQIaPdL6ITjxIEoJe8QYy+U/RTXsOQOtcN+qaARriyNhNmkTZBQxOoj5CLMyoUPD3c/DTNOeEYopIoHSzRAt5NhhkKg0BMqv8d4nrWRTdr4ljOdHFpanSwmz1JgLjeFQ7witYavzoFKaekNqipLuB63jP/2CqUgleBbJbAiU3MPH1HtcOMSLrUgjI5Em/ZfgfAsBNx0RXA==',
-                    "sign" => 'ED5bqClWqsDeyZHqYAK6jsVa+sFnADGFxcA9LDWdrLQss3b/jn9ZFqyDZkuYGoEYoa2ZJpuYYpNyi4bQoDPr71fDKEl/94n7kAmlA5RAsP6WNRAE0S3wUqYtS3ZiMTB4w55DK0Xzy9RVP/NOi2YsSf3wiAGPOhvU0uQ5VsTwLX8pfqhx9fnCZM24LxvhnTt3J9/5tIoDtOO66y6loPODWUtKdFEjJI9lWilH/etaAU3pgZR2ciTBk0OrY5DhQLbrkp8CAPSYDBbQ9O7AnMku1pnRvzIh5wzSCT1qEcW2fy0vPIF/t/KWfXiTUuFipSL7ZBY2U90e5/u8TKxpbr6OBg=='
+                    "content" => base64_encode($encrypted),
+                    "sign" => base64_encode("hello")
                 ]));
             } else {
                 return new Response(200, ["Content-Type" => "application/json"], base64_encode($rsp->serializeToString()));

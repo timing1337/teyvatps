@@ -4,6 +4,7 @@ namespace TeyvatPS\utils;
 
 use labalityowo\Bytebuffer\Buffer;
 use TeyvatPS\Config;
+use OpenSSLAsymmetricKey;
 
 class Crypto
 {
@@ -11,9 +12,11 @@ class Crypto
     public static Buffer $ec2bKey;
     public static Buffer $secretKey;
     public static Buffer $ec2bBin;
+    public static OpenSSLAsymmetricKey $publicKey;
 
     public static function init(): void
     {
+        self::$publicKey = openssl_pkey_get_public(file_get_contents(Config::DATA_FOLDER . 'data/rsa/public.key'));
         self::$ec2bKey = Buffer::new(file_get_contents(Config::DATA_FOLDER . 'ec2b/ec2b.key'));
         self::$secretKey = Buffer::new(file_get_contents(Config::DATA_FOLDER . 'ec2b/secret.key'));
         self::$ec2bBin = Buffer::new(file_get_contents(Config::DATA_FOLDER . 'ec2b/ec2b.bin'));
