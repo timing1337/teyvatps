@@ -1,3 +1,3 @@
 # teyvatps
 
-DISCONTINUED
+DISCONTINUED | new protocol changes updates will still be pushed
