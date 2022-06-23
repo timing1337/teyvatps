@@ -5,6 +5,11 @@ DISCONTINUED | new protocol changes updates will still be pushed
 ## Requirements
 1. [PHP 8.x](https://windows.php.net/download)
 2. [Composer](https://getcomposer.org/)
+3. [Protos](https://github.com/teyvatps/protos). You will need to generate it yourself, check out the repo for more information
+4. packetIds.csv o packetIds.json. It should look like [this](https://github.com/Xiaobin0860/GenshinDebug/blob/master/util/packetIds.json)
+
+## NOTICE
+You'll need to redirect the host yourself, suggest using hosts file for simplicity, make sure to trust the credential
 
 ## Installation
 1. Clone the repo ``git clone https://github.com/teyvatps/teyvatps``. 
@@ -20,5 +25,7 @@ DISCONTINUED | new protocol changes updates will still be pushed
 * ``cd teyvatps``
 
 * ``composer install``
+
+4. Put your generated protos files in 'protos' folder, packetIds in 'data'
 
 4. Run the start.cmd and have fun
