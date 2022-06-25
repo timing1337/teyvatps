@@ -93,9 +93,13 @@ class Avatar extends Entity
         {
             $this->embryos[] = (new \AbilityEmbryo())->setAbilityId($embryoId++)->setAbilityNameHash(AvatarUtils::getAbilityHash($embryo->getAbilityName()));
         }
-        $this->embryos[] = (new \AbilityEmbryo())->setAbilityId($embryoId++)->setAbilityNameHash(AvatarUtils::getAbilityHash('LaSignora_Initialize'));
-        $this->embryos[] = (new \AbilityEmbryo())->setAbilityId($embryoId++)->setAbilityNameHash(AvatarUtils::getAbilityHash('LaSignora_FrostBlume_Trace_Bullet'));
+
         parent::__construct($world, $motion, $rotation, $speed);
+    }
+
+    public function getEmbryos(): array
+    {
+        return $this->embryos;
     }
 
     public function getAvatarInfo(): \AvatarInfo

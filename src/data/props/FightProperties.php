@@ -129,7 +129,9 @@ class FightProperties
             self::FIGHT_PROP_CUR_GRASS_ENERGY => 1,
             self::FIGHT_PROP_CUR_HP => 20000,
             self::FIGHT_PROP_CUR_DEFENSE => 3000,
-            self::FIGHT_PROP_CUR_ATTACK => 3000
+            self::FIGHT_PROP_CUR_ATTACK => 3000,
+            self::FIGHT_PROP_SKILL_CD_MINUS_RATIO => 1,
+            self::FIGHT_PROP_SPEED_PERCENT => 2
         ];
     }
 }

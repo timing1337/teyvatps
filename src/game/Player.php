@@ -101,6 +101,11 @@ class Player
         $playerEnterSceneNotify->setWorldType(1);
         $playerEnterSceneNotify->setWorldLevel(8);
         $playerEnterSceneNotify->setSceneTransaction($sceneId . "-" . PlayerData::UID . "-" . time() . "-67458");
+        $sceneIds = [];
+        for($i = 0; $i < 3000; $i++){
+            $sceneIds[] = $i;
+        }
+        $playerEnterSceneNotify->setSceneTagIdList($sceneIds);
         if ($enterReason === \EnterReason::LOGIN){
             $playerEnterSceneNotify->setIsFirstLoginEnterScene(true);
         } else {

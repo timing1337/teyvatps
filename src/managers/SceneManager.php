@@ -58,6 +58,16 @@ class SceneManager
                 ]
             );
 
+            $sceneIds = [];
+            for($i = 0; $i < 3000; $i++){
+                $sceneIds[] = $i;
+            }
+
+            $worldSceneInfoListNotify = new \PlayerWorldSceneInfoListNotify();
+            $worldSceneInfoListNotify->setInfoList([
+                (new \PlayerWorldSceneInfo())->setSceneId(9)->setIsLocked(false)->setSceneTagIdList($sceneIds)
+            ]);
+
             $onlinePlayerInfo = new \OnlinePlayerInfo();
             $onlinePlayerInfo->setUid(PlayerData::UID);
             $onlinePlayerInfo->setNickname(PlayerData::NAME);
@@ -116,7 +126,7 @@ class SceneManager
             $rsp = new \SceneInitFinishRsp();
             $rsp->setEnterSceneToken($request->getEnterSceneToken());
 
-            return [$worldDataNotify, $worldPlayerInfoNotify, $scenePlayerInfoNotify, $playerGameTimeNotify, $sceneTimeNotify, $sceneDataNotify, $hostPlayerNotify, $sceneTeamUpdateNotify, $playerEnterSceneInfoNotify, $rsp];
+            return [$worldDataNotify, $worldPlayerInfoNotify, $scenePlayerInfoNotify, $playerGameTimeNotify, $sceneTimeNotify, $sceneDataNotify, $hostPlayerNotify, $sceneTeamUpdateNotify, $playerEnterSceneInfoNotify, $worldSceneInfoListNotify, $rsp];
         });
 
         NetworkServer::registerProcessor(\EnterSceneDoneReq::class, function(Session $session, \EnterSceneDoneReq $request): \EnterSceneDoneRsp

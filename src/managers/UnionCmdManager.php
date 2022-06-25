@@ -48,14 +48,12 @@ class UnionCmdManager
                             $entity->setState(\MotionState::MOTION_STATE_STANDBY);
                             return;
                         }
-                        //calculate the speed
                         $entity->setState($moveInfo->getMotionInfo()->getState());
                         $rotation = $moveInfo->getMotionInfo()->getRot();
                         $entity->setRotation(new Vector3($rotation->getX(), $rotation->getY(), $rotation->getZ()));
                         $speed = $moveInfo->getMotionInfo()->getSpeed();
                         $entity->setSpeed(new Vector3($speed->getX(), $speed->getY(), $speed->getZ()));
                         $motion = $moveInfo->getMotionInfo()->getPos();
-                        //TODO: calculate and correct the movement
                         $entity->setMotion(new Vector3($motion->getX(), $motion->getY(), $motion->getZ()));
                         if ($entity instanceof Avatar) {
                             $session->getPlayer()->setPosition(new Vector3($motion->getX(), $motion->getY(), $motion->getZ()));

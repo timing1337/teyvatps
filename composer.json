@@ -4,7 +4,8 @@
         "labalityowo/bytebuffer": "dev-stable",
         "google/protobuf": "^3.20",
         "labalityowo/kcp-php": "dev-stable",
-        "react/http": "1.6.0"
+        "react/http": "1.6.0",
+        "ext-openssl": "*"
     },
     "autoload": {
         "psr-4": {

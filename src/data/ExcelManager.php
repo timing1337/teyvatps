@@ -84,11 +84,8 @@ class ExcelManager
             }
             $depot = self::$depots[$depotId];
             /*
-
+            README: Welcome to model changer without actually touching Melon! Only works with playable chars (?)
             $excelInfo = new \AvatarExcelInfo();
-            $excelInfo->setCombatConfigHash(AvatarUtils::getHashByPreSuf($avatarConfig["combatConfigHashPre"], $avatarConfig["combatConfigHashSuffix"]));
-            $excelInfo->setControllerPathHash(AvatarUtils::getHashByPreSuf($avatarConfig["controllerPathHashPre"], $avatarConfig["controllerPathHashSuffix"]));
-            $excelInfo->setControllerPathRemoteHash(AvatarUtils::getHashByPreSuf($avatarConfig["controllerPathRemoteHashPre"], $avatarConfig["controllerPathRemoteHashSuffix"]));
             $excelInfo->setPrefabPathHash(AvatarUtils::getHashByPreSuf($avatarConfig["prefabPathHashPre"], $avatarConfig["prefabPathHashSuffix"]));
             $excelInfo->setPrefabPathRemoteHash(AvatarUtils::getHashByPreSuf($avatarConfig["prefabPathRemoteHashPre"], $avatarConfig["prefabPathRemoteHashSuffix"]));
             */

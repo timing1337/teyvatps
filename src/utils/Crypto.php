@@ -16,7 +16,7 @@ class Crypto
 
     public static function init(): void
     {
-        self::$publicKey = openssl_pkey_get_public(file_get_contents(Config::DATA_FOLDER . 'data/rsa/public.key'));
+        self::$publicKey = openssl_pkey_get_public(file_get_contents(Config::DATA_FOLDER . 'rsa/public.key'));
         self::$ec2bKey = Buffer::new(file_get_contents(Config::DATA_FOLDER . 'ec2b/ec2b.key'));
         self::$secretKey = Buffer::new(file_get_contents(Config::DATA_FOLDER . 'ec2b/secret.key'));
         self::$ec2bBin = Buffer::new(file_get_contents(Config::DATA_FOLDER . 'ec2b/ec2b.bin'));
