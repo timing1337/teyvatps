@@ -5,7 +5,6 @@ namespace TeyvatPS\managers;
 use TeyvatPS\data\PlayerData;
 use TeyvatPS\network\NetworkServer;
 use TeyvatPS\network\Session;
-use WindSeedClientNotify\AreaNotify;
 
 class PlayerManager
 {

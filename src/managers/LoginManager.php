@@ -8,7 +8,6 @@ use TeyvatPS\data\PlayerData;
 use TeyvatPS\math\Vector3;
 use TeyvatPS\network\NetworkServer;
 use TeyvatPS\network\Session;
-use WindSeedClientNotify\AreaNotify;
 
 class LoginManager
 {
@@ -32,6 +31,7 @@ class LoginManager
         NetworkServer::registerProcessor(\PlayerLoginReq::class, function(Session $session, \PlayerLoginReq $request): array
         {
             $session->createPlayer();
+
             $playerDataNotify = new \PlayerDataNotify();
             $playerDataNotify->setNickName(PlayerData::NAME);
             $playerDataNotify->setServerTime(time() * 1000);
