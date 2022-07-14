@@ -13,6 +13,7 @@ You'll need to redirect the host yourself, suggest using hosts file for simplici
 
 ## KNOWN ISSUE
 Movement bugs (the server can't keep up with the game but still maintaining at stable 0ms (?))
+
 Wouldn't work with CN client > 2.7.50
 
 ## TODO LIST
