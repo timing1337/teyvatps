@@ -52,7 +52,7 @@ class Session
 
     public function send(DataPacket $packet): void
     {
-        Logger::log("Sent packet " . Logger::YELLOW . "{$packet->getName()}");
+        if(!in_array($packet->getName(), NetworkServer::getIgnoredLog())) Logger::log("Sent packet " . Logger::YELLOW . "{$packet->getName()}");
         $encode = $packet->encode();
         if($this->requireEncryption){
             //2.7 and lower

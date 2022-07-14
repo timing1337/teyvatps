@@ -30,7 +30,7 @@ class NetworkServer
      */
     private static array $sessions = [];
 
-    private static array $ignoredLog = ['UnionCmdNotify', 'CombatInvocationsNotify', 'PingReq'];
+    private static array $ignoredLog = ['UnionCmdNotify', 'CombatInvocationsNotify', 'PingReq', 'PingRsp', 'ClientAbilityChangeNotify', 'AbilityInvocationsNotify', 'ClientAbilityInitFinishNotify'];
 
     public static function init(): void
     {
@@ -113,7 +113,7 @@ class NetworkServer
                 }
             }
         }else{
-            Logger::log("Unhandled : " . get_class($packet->data));
+            if(!in_array(get_class($packet->data), self::$ignoredLog)) Logger::log("Unhandled : " . get_class($packet->data));
         }
     }
 
@@ -146,5 +146,10 @@ class NetworkServer
     public static function getRecv(): Buffer
     {
         return self::$recv;
+    }
+
+    public static function getIgnoredLog(): array
+    {
+        return self::$ignoredLog;
     }
 }
