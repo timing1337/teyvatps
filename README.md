@@ -11,6 +11,14 @@ SLOW DEVELOPMENT
 ## NOTICE
 You'll need to redirect the host yourself, suggest using hosts file for simplicity, make sure to trust the credential
 
+## KNOWN ISSUE
+Movement bugs (the server can't keep up with the game but still maintaining at stable 0ms (?))
+Wouldn't work with CN client > 2.7.50
+
+## TODO LIST
+
+Implement metadata patching
+
 ## Installation
 1. Clone the repo ``git clone https://github.com/teyvatps/teyvatps``. 
 
