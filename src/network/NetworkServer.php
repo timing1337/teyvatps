@@ -7,9 +7,11 @@ use labalityowo\Bytebuffer\Buffer;
 use React\Datagram\Factory;
 use React\Datagram\Socket;
 use TeyvatPS\Config;
+use TeyvatPS\managers\InventoryManager;
 use TeyvatPS\managers\LoginManager;
 use TeyvatPS\managers\PlayerManager;
 use TeyvatPS\managers\SceneManager;
+use TeyvatPS\managers\TeamManager;
 use TeyvatPS\managers\UnionCmdManager;
 use TeyvatPS\network\protocol\DataPacket;
 use TeyvatPS\network\protocol\Handshake;
@@ -49,6 +51,8 @@ class NetworkServer
         SceneManager::init();
         PlayerManager::init();
         UnionCmdManager::init();
+        InventoryManager::init();
+        TeamManager::init();
     }
 
     public static function onReceived(string $message, string $address, Socket $socket): void

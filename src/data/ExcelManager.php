@@ -6,6 +6,7 @@ use TeyvatPS\Config;
 use TeyvatPS\data\avatar\AbilityEmbryo;
 use TeyvatPS\data\avatar\AvatarDepot;
 use TeyvatPS\data\avatar\InherentProudSkillOpen;
+use TeyvatPS\data\item\Material;
 use TeyvatPS\data\props\AvatarProperties;
 use TeyvatPS\data\props\FightProperties;
 use TeyvatPS\utils\AvatarUtils;
@@ -28,11 +29,37 @@ class ExcelManager
      */
     private static array $embryos = [];
 
+    private static array $namecards = [];
+    /**
+     * @var Material[]
+     */
+    private static array $materials = [];
+
     public static function init(): void
     {
         $avatarExcelConfigData = json_decode(file_get_contents(Config::GENSHIN_DATA . 'ExcelBinOutput/AvatarExcelConfigData.json'), true);
         $avatarSkillDepotExcelConfigData = json_decode(file_get_contents(Config::GENSHIN_DATA . 'ExcelBinOutput/AvatarSkillDepotExcelConfigData.json'), true);
+        $materialExcelConfigData = json_decode(file_get_contents(Config::GENSHIN_DATA . 'ExcelBinOutput/MaterialExcelConfigData.json'), true);
 
+        foreach ($materialExcelConfigData as $materialConfig){
+            switch($materialConfig["itemType"]){
+                case "ITEM_MATERIAL":
+                    if(!isset($materialConfig["materialType"])){
+                        break;
+                    }
+                    if($materialConfig["materialType"] == "ITEM_VIRTUAL"){
+                        break;
+                    }
+
+                    if($materialConfig["materialType"] == "MATERIAL_NAMECARD"){
+                        self::$namecards[] = $materialConfig["id"];
+                        break;
+                    }
+
+                    self::$materials[] = new Material($materialConfig["id"], $materialConfig["stackLimit"]);
+                    break;
+            }
+        }
         foreach (glob(Config::GENSHIN_DATA . "BinOutput/Avatar/*.json") as $file) {
             $name = basename($file, '.json');
             if (!str_contains($name, 'ConfigAvatar') || str_contains($name, 'Manekin') || str_contains($name, 'Nude') || str_contains($name, 'Test')){
@@ -129,5 +156,23 @@ class ExcelManager
     public static function getAvatars(): array
     {
         return self::$avatars;
+    }
+
+    public static function getNamecards(): array
+    {
+        return self::$namecards;
+    }
+
+    public static function getMaterialFromId(int $id): ?Material
+    {
+        return self::$materials[$id] ?? null;
+    }
+
+    /**
+     * @return Material[]
+     */
+    public static function getMaterials(): array
+    {
+        return self::$materials;
     }
 }

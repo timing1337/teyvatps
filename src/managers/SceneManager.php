@@ -2,6 +2,7 @@
 
 namespace TeyvatPS\managers;
 
+use TeyvatPS\data\ExcelManager;
 use TeyvatPS\data\PlayerData;
 use TeyvatPS\data\props\DataProperties;
 use TeyvatPS\math\Vector3;

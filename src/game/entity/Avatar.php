@@ -169,15 +169,6 @@ class Avatar extends Entity
         }
         $sceneEntityInfo->setFightPropList($fightProp);
         $sceneEntityInfo->setAvatar($this->getSceneAvatarInfo());
-
-        $entityAuthorityInfo = new \EntityAuthorityInfo();
-        $entityAuthorityInfo->setAiInfo((new \SceneEntityAiInfo())->setIsAiOpen(true));
-        $entityAuthorityInfo->setAbilityInfo(new \AbilitySyncStateInfo());
-        $entityAuthorityInfo->setBornPos(new \Vector());
-        $entityAuthorityInfo->setPoseParaList([]);
-        $entityAuthorityInfo->setRendererChangedInfo(new \EntityRendererChangedInfo());
-
-        $sceneEntityInfo->setEntityAuthorityInfo($entityAuthorityInfo);
         return $sceneEntityInfo;
     }
 

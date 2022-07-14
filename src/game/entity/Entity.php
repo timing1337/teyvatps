@@ -33,6 +33,14 @@ class Entity
         $sceneEntityInfo->setLifeState(1);
         $sceneEntityInfo->setMotionInfo((new \MotionInfo())->setPos($this->motion->toProto())->setRot($this->rotation->toProto())->setSpeed($this->speed->toProto())->setState($this->state));
         $sceneEntityInfo->setAnimatorParaList([]);
+        $entityAuthorityInfo = new \EntityAuthorityInfo();
+        $entityAuthorityInfo->setAiInfo((new \SceneEntityAiInfo())->setIsAiOpen(true));
+        $entityAuthorityInfo->setAbilityInfo(new \AbilitySyncStateInfo());
+        $entityAuthorityInfo->setBornPos(new \Vector());
+        $entityAuthorityInfo->setPoseParaList([]);
+        $entityAuthorityInfo->setRendererChangedInfo(new \EntityRendererChangedInfo());
+
+        $sceneEntityInfo->setEntityAuthorityInfo($entityAuthorityInfo);
         return $sceneEntityInfo;
     }
 

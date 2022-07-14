@@ -21,6 +21,8 @@ class Player
     private AvatarManager $avatarManager;
     private Vector3 $position;
 
+    private int $widgetId;
+
     public function __construct(Session $session)
     {
         $this->session = $session;
@@ -115,5 +117,21 @@ class Player
         $this->position = $position;
         $this->session->getWorld()->setSceneId($sceneId);
         $this->session->send(new DataPacket('PlayerEnterSceneNotify', $playerEnterSceneNotify));
+    }
+
+    /**
+     * @return int
+     */
+    public function getWidgetId(): int
+    {
+        return $this->widgetId;
+    }
+
+    /**
+     * @param int $widgetId
+     */
+    public function setWidgetId(int $widgetId): void
+    {
+        $this->widgetId = $widgetId;
     }
 }

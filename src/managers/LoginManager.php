@@ -3,6 +3,7 @@
 namespace TeyvatPS\managers;
 
 use Google\Protobuf\Internal\Message;
+use TeyvatPS\data\ExcelManager;
 use TeyvatPS\data\PlayerData;
 use TeyvatPS\math\Vector3;
 use TeyvatPS\network\NetworkServer;
@@ -31,7 +32,6 @@ class LoginManager
         NetworkServer::registerProcessor(\PlayerLoginReq::class, function(Session $session, \PlayerLoginReq $request): array
         {
             $session->createPlayer();
-
             $playerDataNotify = new \PlayerDataNotify();
             $playerDataNotify->setNickName(PlayerData::NAME);
             $playerDataNotify->setServerTime(time() * 1000);
@@ -57,7 +57,11 @@ class LoginManager
             $playerStoreNotify = new \PlayerStoreNotify();
             $playerStoreNotify->setStoreType(\StoreType::STORE_TYPE_PACK);
             $playerStoreNotify->setWeightLimit(30000);
-            $playerStoreNotify->setItemList([]);
+            $items = [];
+            foreach (ExcelManager::getMaterials() as $material){
+                $items[] = (new \Item())->setItemId($material->getItemId())->setGuid($session->getWorld()->getNextGuid())->setMaterial((new \Material())->setCount($material->getStackLimit()));
+            }
+            $playerStoreNotify->setItemList($items);
 
             $avatarManager = $session->getPlayer()->getAvatarManager();
 
@@ -73,7 +77,7 @@ class LoginManager
             $rsp = new \PlayerLoginRsp();
             $rsp->setGameBiz("hk4e_global");
             $rsp->setIsScOpen(false);
-            return [$playerDataNotify, $openStatesNotify, $storeWeightLimitNotify, $playerStoreNotify, $avatarDataNotify, $windy, $rsp];
+            return [$playerDataNotify, $openStatesNotify, $storeWeightLimitNotify, $playerStoreNotify, $avatarDataNotify, $rsp];
         });
     }
 }
