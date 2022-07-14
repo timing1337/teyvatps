@@ -21,7 +21,7 @@ class SceneManager
             self::$points[] = $i;
         }
 
-        for ($i = 0; $i < 9; $i++)
+        for ($i = 0; $i < 500; $i++)
         {
             self::$areas[] = $i;
         }
@@ -45,7 +45,7 @@ class SceneManager
 
         NetworkServer::registerProcessor(\GetSceneAreaReq::class, function(Session $session, \GetSceneAreaReq $request): \GetSceneAreaRsp
         {
-            return (new \GetSceneAreaRsp())->setSceneId($request->getSceneId())->setAreaIdList([1,2,3,4,5,6,7,8,9,10,11,12,13,14,17,18,19,100,101,102,103,200,210,300]);
+            return (new \GetSceneAreaRsp())->setSceneId($request->getSceneId())->setAreaIdList(self::$areas);
         });
 
         NetworkServer::registerProcessor(\SceneInitFinishReq::class, function (Session $session, \SceneInitFinishReq $request): array

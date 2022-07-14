@@ -83,10 +83,9 @@ class DispatchServer
 
             $rsp->setRegionInfo($regionInfo);
             $rsp->setClientRegionCustomConfigEncrypted($customConfig->toString());
-            if (isset($config['version']) && (str_contains($config['version'], "2.7.5") || str_contains($config['version'], "2.8"))) {
+            if (isset($config['version']) && (str_contains($config['version'], "2.7.5") || str_contains($config['version'], "2.8.5"))) {
                 $regionInfo->setSecretKey(0);
                 openssl_public_encrypt($rsp->serializeToString(), $encrypted, Crypto::$publicKey, OPENSSL_PKCS1_PADDING);
-
                 return new Response(200, ["Content-Type" => "application/json"], json_encode([
                     "content" => base64_encode($encrypted),
                     "sign" => base64_encode("hello")

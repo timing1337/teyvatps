@@ -7,6 +7,7 @@ use TeyvatPS\data\PlayerData;
 use TeyvatPS\math\Vector3;
 use TeyvatPS\network\NetworkServer;
 use TeyvatPS\network\Session;
+use WindSeedClientNotify\AreaNotify;
 
 class LoginManager
 {
@@ -67,8 +68,12 @@ class LoginManager
             $avatarDataNotify->setCurAvatarTeamId($avatarManager->getCurTeamIndex());
             $avatarDataNotify->setOwnedFlycloakList([140001]);
 
-            $session->getPlayer()->teleport(9, new Vector3(1, 300, -1), \EnterType::ENTER_TYPE_SELF, \EnterReason::LOGIN, true);
-            return [$playerDataNotify, $openStatesNotify, $storeWeightLimitNotify, $playerStoreNotify, $avatarDataNotify];
+            $session->getPlayer()->teleport(3, new Vector3(1, 300, -1), \EnterType::ENTER_TYPE_SELF, \EnterReason::LOGIN, true);
+
+            $rsp = new \PlayerLoginRsp();
+            $rsp->setGameBiz("hk4e_global");
+            $rsp->setIsScOpen(false);
+            return [$playerDataNotify, $openStatesNotify, $storeWeightLimitNotify, $playerStoreNotify, $avatarDataNotify, $windy, $rsp];
         });
     }
 }
