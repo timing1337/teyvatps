@@ -1,6 +1,6 @@
 # teyvatps
 
-DISCONTINUED | new protocol changes updates will still be pushed
+SLOW DEVELOPMENT
 
 ## Requirements
 1. [PHP 8.x](https://windows.php.net/download)
