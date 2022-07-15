@@ -75,17 +75,11 @@ class Player
         return $this->avatarManager;
     }
 
-    /**
-     * @return Vector3
-     */
     public function getPosition(): Vector3
     {
         return $this->position;
     }
 
-    /**
-     * @param Vector3 $position
-     */
     public function setPosition(Vector3 $position): void
     {
         $this->position = $position;
@@ -119,17 +113,18 @@ class Player
         $this->session->send(new DataPacket('PlayerEnterSceneNotify', $playerEnterSceneNotify));
     }
 
-    /**
-     * @return int
-     */
+    public function sendMessage(string $text, int $sender = 69): void
+    {
+        $notify = new \PrivateChatNotify();
+        $notify->setChatInfo((new \ChatInfo())->setText($text)->setUid($sender)->setToUid(PlayerData::UID));
+        $this->session->send(new DataPacket('PrivateChatNotify', $notify));
+    }
+
     public function getWidgetId(): int
     {
         return $this->widgetId;
     }
 
-    /**
-     * @param int $widgetId
-     */
     public function setWidgetId(int $widgetId): void
     {
         $this->widgetId = $widgetId;

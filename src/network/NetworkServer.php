@@ -6,6 +6,7 @@ use Google\Protobuf\Internal\Message;
 use labalityowo\Bytebuffer\Buffer;
 use React\Datagram\Factory;
 use React\Datagram\Socket;
+use TeyvatPS\commands\CommandManager;
 use TeyvatPS\Config;
 use TeyvatPS\managers\InventoryManager;
 use TeyvatPS\managers\LoginManager;
@@ -22,7 +23,7 @@ class NetworkServer
     private static Buffer $recv;
     private static Socket $server;
     /**
-     * @var \Closure[]
+     * @var \Closure[][]
      */
     private static array $processors = [];
     /**
@@ -53,6 +54,7 @@ class NetworkServer
         UnionCmdManager::init();
         InventoryManager::init();
         TeamManager::init();
+        CommandManager::init();
     }
 
     public static function onReceived(string $message, string $address, Socket $socket): void
@@ -98,18 +100,20 @@ class NetworkServer
 
     public static function process(Session $session, DataPacket $packet): void
     {
-        $processor = self::$processors[get_class($packet->data)] ?? null;
-        if ($processor !== null) {
+        $processors = self::$processors[get_class($packet->data)] ?? null;
+        if ($processors !== null) {
             if(!in_array(get_class($packet->data), self::$ignoredLog)) Logger::log("Handling : " . get_class($packet->data));
-            $response = ($processor)($session, $packet->data);
-            if(is_array($response)){
-                foreach ($response as $r){
-                    $session->send(new DataPacket(get_class($r), $r));
-                }
-            }else if($response instanceof Message){
-                $session->send(new DataPacket(get_class($response), $response));
-                if($response instanceof \GetPlayerTokenRsp){
-                    $session->setInitialized();
+            foreach ($processors as $processor){
+                $response = ($processor)($session, $packet->data);
+                if(is_array($response)){
+                    foreach ($response as $r){
+                        $session->send(new DataPacket(get_class($r), $r));
+                    }
+                }else if($response instanceof Message){
+                    $session->send(new DataPacket(get_class($response), $response));
+                    if($response instanceof \GetPlayerTokenRsp){
+                        $session->setInitialized();
+                    }
                 }
             }
         }else{
@@ -129,7 +133,7 @@ class NetworkServer
 
     public static function registerProcessor(string $class, \Closure $processor): void
     {
-        self::$processors[$class] = $processor;
+        self::$processors[$class][] = $processor;
     }
 
     public static function registerSession(string $ip, int $port): void
