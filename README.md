@@ -16,6 +16,8 @@ Movement bugs (the server can't keep up with the game but still maintaining at s
 
 Wouldn't work with CN client > 2.7.50
 
+999ms ping (php issue tbh)
+
 ## TODO LIST
 
 Implement metadata patching
