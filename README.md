@@ -1,8 +1,12 @@
 # teyvatps
 
-SLOW DEVELOPMENT
+discontinued. thanks everyone for all of the support
 
-Works with every released client with given keys and protos information
+teyvatps will no longer receive any supports from now on.
+
+## why?
+
+while implementing gadgets, i noticed how unstable is the kcp and server implementation to the point its not worth developing anymore
 
 ## Requirements
 1. [PHP 8.x](https://windows.php.net/download)
