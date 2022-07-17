@@ -2,6 +2,7 @@
 
 namespace TeyvatPS\game\entity;
 
+use ClientGadgetInfo;
 use ProtEntityType;
 use SceneEntityInfo;
 use SceneGadgetInfo;
@@ -10,20 +11,22 @@ use TeyvatPS\game\World;
 use TeyvatPS\math\Vector3;
 use VehicleInfo;
 
-class Gadget extends Entity
+class GadgetClient extends Entity
 {
     private int $gadgetId;
+    private ClientGadgetInfo $clientGadgetInfo;
 
     public function __construct(
+        int $id,
         int $gadgetId,
+        ClientGadgetInfo $clientGadgetInfo,
         World $world,
         Vector3 $motion,
         Vector3 $rotation = null,
         Vector3 $speed = null
     ) {
-        $this->id = $world->getNextEntityId(
-            ProtEntityType::PROT_ENTITY_TYPE_GADGET
-        );
+        $this->id = $id;
+        $this->clientGadgetInfo = $clientGadgetInfo;
         $this->guid = $world->getNextGuid();
         $this->gadgetId = $gadgetId;
         parent::__construct($world, $motion, $rotation, $speed);
@@ -54,7 +57,7 @@ class Gadget extends Entity
         $sceneGadgetInfo->setVehicleInfo(
             (new VehicleInfo())->setCurStamina(240)->setOwnerUid(100)
         );
-
+        $sceneGadgetInfo->setClientGadget($this->clientGadgetInfo);
         return $sceneGadgetInfo;
     }
 }

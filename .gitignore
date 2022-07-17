@@ -5,3 +5,6 @@ data/packetIds.csv
 data/packetids.json
 data/protos/
 GenshinData
+luas
+./src/game/windy
+./src/game/activities

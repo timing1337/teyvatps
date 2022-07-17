@@ -82,6 +82,11 @@ class World
         $this->entities[$entity->getId()] = $entity;
     }
 
+    public function killEntityById(int $id): void
+    {
+        $this->killEntity($this->getEntityById($id));
+    }
+
     public function killEntity(Entity $entity): void
     {
         $packet = new SceneEntityDisappearNotify();

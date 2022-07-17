@@ -19,6 +19,10 @@ class Vector3
             && $this->z === $vector->z);
     }
 
+    public static function fromProto(Vector $vector): self{
+        return (new self($vector->getX(), $vector->getY(), $vector->getZ()));
+    }
+
     public function toProto(): Vector
     {
         return (new Vector())->setX($this->x)->setY($this->y)->setZ($this->z);

@@ -45,7 +45,7 @@ class CommandManager
                     }
                 }
 
-                return (new PrivateChatRsp())->setRetcode(1);
+                return (new PrivateChatRsp())->setRetcode(0);
             }
         );
 

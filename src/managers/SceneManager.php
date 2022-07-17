@@ -2,6 +2,7 @@
 
 namespace TeyvatPS\managers;
 
+use ClientGadgetInfo;
 use EnterReason;
 use EnterSceneDoneReq;
 use EnterSceneDoneRsp;
@@ -37,6 +38,8 @@ use SceneTimeNotify;
 use TeamEnterSceneInfo;
 use TeyvatPS\Config;
 use TeyvatPS\data\props\DataProperties;
+use TeyvatPS\game\entity\Gadget;
+use TeyvatPS\game\entity\GadgetClient;
 use TeyvatPS\math\Vector3;
 use TeyvatPS\network\NetworkServer;
 use TeyvatPS\network\Session;
@@ -294,6 +297,51 @@ class SceneManager
                 $rsp->setMarkList([]);
 
                 return $rsp;
+            }
+        );
+
+        NetworkServer::registerProcessor(
+            \EntityAiSyncNotify::class,
+            function (Session $session, \EntityAiSyncNotify $request): \EntityAiSyncNotify {
+                $rsp = new \EntityAiSyncNotify();
+                $infos = [];
+                foreach ($request->getLocalAvatarAlertedMonsterList() as $monsterList)
+                {
+                    $infos[] = (new \AiSyncInfo())->setEntityId(33554491)->setHasPathToTarget(true);
+                }
+                $rsp->setInfoList($infos);
+                return $rsp;
+            }
+        );
+
+        NetworkServer::registerProcessor(\EvtCreateGadgetNotify::class,
+            function (Session $session, \EvtCreateGadgetNotify $request): array {
+
+                $clientGadgetInfo = new ClientGadgetInfo();
+                $clientGadgetInfo->setGuid($session->getWorld()->getNextGuid());
+                $clientGadgetInfo->setAsyncLoad($request->getIsAsyncLoad());
+                $clientGadgetInfo->setCampId($request->getCampId());
+                $clientGadgetInfo->setCampType($request->getCampType());
+                $clientGadgetInfo->setOwnerEntityId($request->getOwnerEntityId());
+                $clientGadgetInfo->setTargetEntityId($request->getTargetEntityId());
+
+                $gadgetEntity = new GadgetClient(
+                    $request->getEntityId(),
+                    $request->getConfigId(),
+                    $clientGadgetInfo,
+                    $session->getWorld(),
+                    Vector3::fromProto($request->getInitPos()),
+                    Vector3::fromProto($request->getInitEulerAngles())
+                );
+                $session->getWorld()->addEntity($gadgetEntity);
+                return [];
+            }
+        );
+
+        NetworkServer::registerProcessor(\EvtDestroyGadgetNotify::class,
+            function (Session $session, \EvtDestroyGadgetNotify $request): array {
+                $session->getWorld()->killEntityById($request->getEntityId());
+                return [];
             }
         );
     }
