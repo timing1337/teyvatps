@@ -1,0 +1,10 @@
+parameters:
+	level: 6
+	paths:
+		- src
+	ignoreErrors:
+	    - "#Protobuf#"
+	    - '#no value type specified in iterable type array.#'
+	    - '#not found#'
+	    - '#unknown class#'
+	    - '#has invalid#'

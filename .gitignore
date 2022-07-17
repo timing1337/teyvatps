@@ -1,0 +1,7 @@
+.idea
+composer.lock
+vendor
+data/packetIds.csv
+data/packetids.json
+data/protos/
+GenshinData

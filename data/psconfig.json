@@ -1,0 +1,18 @@
+{
+  "host": "127.0.0.1",
+  "port": 22102,
+  "player": {
+    "uid": 100,
+    "name": "<color=#56c596>l</color><color=#55c79b>a</color><color=#55caa1>b</color><color=#54cca6>a</color><color=#53ceac>l</color><color=#53d0b2>i</color><color=#52d3b8>t</color><color=#51d5be>y</color><color=#50d7c5>o</color><color=#4fdacc>w</color><color=#4edcd3>o</color><color=#4ededa> </color><color=#4ddfe0>@</color><color=#4cdce3> </color><color=#4ad8e5>T</color><color=#49d5e7>e</color><color=#48d1ea>y</color><color=#47ccec>v</color><color=#46c8ee>a</color><color=#45c3f0>t</color><color=#43bef3>P</color><color=#42b9f5>S</color>",
+    "level": 60,
+    "exp": 0,
+    "namecard": 210001,
+    "achivements": 10000,
+    "signature": "",
+    "avatarId": 10000007
+  },
+  "commands":
+  {
+    "prefix": "!"
+  }
+}
