@@ -8,6 +8,7 @@ use TeyvatPS\data\avatar\AbilityEmbryo;
 use TeyvatPS\data\avatar\AvatarDepot;
 use TeyvatPS\data\avatar\InherentProudSkillOpen;
 use TeyvatPS\data\item\Material;
+use TeyvatPS\data\item\Weapon;
 use TeyvatPS\data\monster\MonsterData;
 use TeyvatPS\data\props\EntityProperties;
 use TeyvatPS\data\props\FightProperties;
@@ -39,6 +40,8 @@ class ExcelManager
 
     private static array $gadgets = [];
     private static array $monsters = [];
+
+    private static array $weapons = [];
 
     public static function init(): void
     {
@@ -78,6 +81,14 @@ class ExcelManager
             true
         );
 
+        $weaponExcelConfigData = json_decode(
+            file_get_contents(
+                FolderConstants::GENSHIN_DATA
+                . 'ExcelBinOutput/WeaponExcelConfigData.json'
+            ),
+            true
+        );
+
         foreach ($monsterExcelConfigData as $monsterConfig) {
             self::$monsters[$monsterConfig["id"]] = new MonsterData(
                 $monsterConfig["id"],
@@ -88,16 +99,13 @@ class ExcelManager
         }
 
         foreach ($gadgetExcelConfigData as $gadgetConfig) {
-            self::$gadgets[$gadgetConfig['Id']] = $gadgetConfig['JsonName'];
+            self::$gadgets[$gadgetConfig['id']] = $gadgetConfig['jsonName'];
         }
 
         foreach ($materialExcelConfigData as $materialConfig) {
             switch ($materialConfig["itemType"]) {
                 case "ITEM_MATERIAL":
                     if (!isset($materialConfig["materialType"])) {
-                        break;
-                    }
-                    if ($materialConfig["materialType"] == "ITEM_VIRTUAL") {
                         break;
                     }
 
@@ -110,11 +118,19 @@ class ExcelManager
 
                     self::$materials[] = new Material(
                         $materialConfig["id"],
-                        $materialConfig["stackLimit"]
+                        $materialConfig["stackLimit"] ?? 10000
                     );
                     break;
             }
         }
+        self::$materials[] = new Material(
+            143,
+            10000
+        );
+        self::$materials[] = new Material(
+            144,
+            10000
+        );
         foreach (
             glob(FolderConstants::GENSHIN_DATA . "BinOutput/Avatar/*.json") as
             $file
@@ -166,7 +182,7 @@ class ExcelManager
                     continue;
                 }
                 $proundSkillOpens[] = new InherentProudSkillOpen(
-                    $proudSkillOpen["proudSkillGroupId"],
+                    $proudSkillOpen["proudSkillGroupId"] * 100 + 1,
                     $proudSkillOpen["needAvatarPromoteLevel"] ?? 0
                 );
             }
@@ -194,27 +210,38 @@ class ExcelManager
             }
             $depot = self::$depots[$depotId];
             $proudSkills = $depot->getDefaultProudSkillsMap();
-            $avatar = new AvatarInfo();
+            $avatar = new AvatarInfo;
             $avatar->setAvatarId($avatarConfig['id']);
             $avatar->setAvatarType(1);
             $avatar->setBornTime(time());
             $avatar->setSkillDepotId($depotId);
-            $avatar->setTalentIdList([]);
+            $avatar->setTalentIdList($depot->getTalentIds());
             $avatar->setPropMap(EntityProperties::getAll());
             $avatar->setFightPropMap(FightProperties::getAll());
-            $avatar->setFetterInfo((new AvatarFetterInfo())->setExpLevel(1));
+            $avatar->setFetterInfo((new AvatarFetterInfo)->setExpLevel(1));
             $avatar->setEquipGuidList([2785642601942876162]);
             $avatar->setInherentProudSkillList(array_keys($proudSkills));
             $avatar->setSkillLevelMap($depot->getDefaultSkillMap());
             $avatar->setProudSkillExtraLevelMap($proudSkills);
             $avatar->setWearingFlycloakId(140001);
             $avatar->setLifeState(1);
+            $avatar->setCoreProudSkillLevel(6);
             self::$avatars[$avatarConfig['id']] = $avatar;
             self::$idToName[$avatarConfig['id']] = explode(
                 'UI_AvatarIcon_',
                 $avatarConfig["iconName"]
             )[1];
         }
+    }
+
+    public static function getWeapons(): array
+    {
+        return self::$weapons;
+    }
+
+    public static function getWeaponFromGuid(int $guid): ?Weapon
+    {
+        return self::$weapons[$gsuid] ?? null;
     }
 
     public static function getEmbryosFromId(int $id): array

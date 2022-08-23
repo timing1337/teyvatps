@@ -10,7 +10,8 @@ class InherentProudSkillOpen
     public function __construct(
         int $proudSkillGroupId,
         int $needAvatarPromoteLevel
-    ) {
+    )
+    {
         $this->proudSkillGroupId = $proudSkillGroupId;
         $this->needAvatarPromoteLevel = $needAvatarPromoteLevel;
     }

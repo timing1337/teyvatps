@@ -9,6 +9,9 @@ use PullPrivateChatReq;
 use PullPrivateChatRsp;
 use PullRecentChatReq;
 use PullRecentChatRsp;
+use TeyvatPS\commands\defaults\EmbryoCommand;
+use TeyvatPS\commands\defaults\ItemCommand;
+use TeyvatPS\commands\defaults\PositionCommand;
 use TeyvatPS\commands\defaults\RejoinCommand;
 use TeyvatPS\commands\defaults\SpawnGadgetCommand;
 use TeyvatPS\commands\defaults\SpawnMonsterCommand;
@@ -23,10 +26,13 @@ class CommandManager
 
     public static function init(): void
     {
-        self::registerCommand(new SpawnMonsterCommand());
-        self::registerCommand(new SpawnGadgetCommand());
-        self::registerCommand(new RejoinCommand());
-        self::registerCommand(new TeleportCommand());
+        self::registerCommand(new SpawnMonsterCommand);
+        self::registerCommand(new SpawnGadgetCommand);
+        self::registerCommand(new RejoinCommand);
+        self::registerCommand(new TeleportCommand);
+        self::registerCommand(new PositionCommand);
+        self::registerCommand(new ItemCommand);
+        self::registerCommand(new EmbryoCommand());
         NetworkServer::registerProcessor(
             PrivateChatReq::class,
             function (Session $session, PrivateChatReq $req): PrivateChatRsp {
@@ -45,7 +51,7 @@ class CommandManager
                     }
                 }
 
-                return (new PrivateChatRsp())->setRetcode(0);
+                return (new PrivateChatRsp)->setRetcode(0);
             }
         );
 
@@ -55,12 +61,12 @@ class CommandManager
                 Session $session,
                 PullPrivateChatReq $req
             ): PullPrivateChatRsp {
-                $chatInfo = new ChatInfo();
+                $chatInfo = new ChatInfo;
                 $chatInfo->setUid(0);
                 $chatInfo->setToUid(Config::getUid());
                 $chatInfo->setText("<3");
                 $chatInfo->setTime(time());
-                $rsp = (new PullPrivateChatRsp());
+                $rsp = (new PullPrivateChatRsp);
                 $rsp->setChatInfo([$chatInfo]);
 
                 return $rsp;
@@ -73,12 +79,12 @@ class CommandManager
                 Session $session,
                 PullRecentChatReq $req
             ): PullRecentChatRsp {
-                $chatInfo = new ChatInfo();
+                $chatInfo = new ChatInfo;
                 $chatInfo->setUid(0);
                 $chatInfo->setToUid(Config::getUid());
                 $chatInfo->setText("<3");
                 $chatInfo->setTime(time());
-                $rsp = (new PullRecentChatRsp());
+                $rsp = (new PullRecentChatRsp);
                 $rsp->setChatInfo([$chatInfo]);
 
                 return $rsp;

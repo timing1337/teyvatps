@@ -18,7 +18,8 @@ class MonsterData
         string $jsonName,
         array $equips = [],
         array $affix = []
-    ) {
+    )
+    {
         $this->id = $id;
         $this->jsonName = $jsonName;
         $this->equips = $equips;

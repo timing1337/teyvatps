@@ -9,6 +9,7 @@ use GetPlayerTokenReq;
 use GetPlayerTokenRsp;
 use Google\Protobuf\Internal\Message;
 use Item;
+use labalityowo\Bytebuffer\Buffer;
 use Material;
 use OpenStateUpdateNotify;
 use PlayerDataNotify;
@@ -22,6 +23,7 @@ use TeyvatPS\data\ExcelManager;
 use TeyvatPS\math\Vector3;
 use TeyvatPS\network\NetworkServer;
 use TeyvatPS\network\Session;
+use TeyvatPS\utils\Crypto;
 
 class LoginManager
 {
@@ -33,12 +35,25 @@ class LoginManager
                 if ($session->isInitialized()) {
                     $session->setInitialized(false);
                 }
-                $rsp = new GetPlayerTokenRsp();
+                $seed = 0;
+                $rsp = new GetPlayerTokenRsp;
                 $rsp->setUid(Config::getUid());
                 $rsp->setAccountType($request->getAccountType());
                 $rsp->setAccountUid($request->getAccountUid());
                 $rsp->setToken($request->getAccountToken());
-                $rsp->setSecretKey("0");
+                $rsp->setSecretKey((string)$seed);
+
+                //metadata patching...
+                if ($request->getKeyId() > 0) {
+                    $clientSeed = base64_decode($request->getClientSeed());
+                    openssl_private_decrypt($clientSeed, $decryptedClientSeed, Crypto::$privateSigningKey, OPENSSL_PKCS1_PADDING);
+                    $seedBytes = $seed ^ (unpack("J", $decryptedClientSeed)[1]);
+                    $buffer = Buffer::new(pack("J", $seedBytes));
+                    openssl_public_encrypt($buffer->toString(), $encryptedSeed, Crypto::$publicKey, OPENSSL_PKCS1_PADDING);
+                    openssl_sign($buffer->toString(), $signature, Crypto::$privateSigningKey, OPENSSL_ALGO_SHA256);
+                    $rsp->setEncryptedSeed(base64_encode($encryptedSeed));
+                    $rsp->setSeedSignature(base64_encode($signature));
+                }
 
                 return $rsp;
             }
@@ -48,8 +63,7 @@ class LoginManager
             PlayerLoginReq::class,
             function (Session $session, PlayerLoginReq $request): array {
                 $session->createPlayer();
-
-                $playerDataNotify = new PlayerDataNotify();
+                $playerDataNotify = new PlayerDataNotify;
                 $playerDataNotify->setNickName(Config::getName());
                 $playerDataNotify->setServerTime(time() * 1000);
                 $playerDataNotify->setRegionId(1); //?
@@ -62,10 +76,10 @@ class LoginManager
                     $openStates[$i] = 1;
                 }
 
-                $openStatesNotify = new OpenStateUpdateNotify();
+                $openStatesNotify = new OpenStateUpdateNotify;
                 $openStatesNotify->setOpenStateMap($openStates);
 
-                $storeWeightLimitNotify = new StoreWeightLimitNotify();
+                $storeWeightLimitNotify = new StoreWeightLimitNotify;
                 $storeWeightLimitNotify->setStoreType(
                     StoreType::STORE_TYPE_PACK
                 );
@@ -75,24 +89,25 @@ class LoginManager
                 $storeWeightLimitNotify->setReliquaryCountLimit(1500);
                 $storeWeightLimitNotify->setFurnitureCountLimit(2000);
 
-                $playerStoreNotify = new PlayerStoreNotify();
+                $playerStoreNotify = new PlayerStoreNotify;
                 $playerStoreNotify->setStoreType(StoreType::STORE_TYPE_PACK);
                 $playerStoreNotify->setWeightLimit(30000);
                 $items = [];
                 foreach (ExcelManager::getMaterials() as $material) {
-                    $items[] = (new Item())->setItemId($material->getItemId())
+                    $items[] = (new Item)->setItemId($material->getItemId())
                         ->setGuid($session->getWorld()->getNextGuid())
                         ->setMaterial(
-                            (new Material())->setCount(
+                            (new Material)->setCount(
                                 $material->getStackLimit()
                             )
                         );
                 }
+
                 $playerStoreNotify->setItemList($items);
 
                 $avatarManager = $session->getPlayer()->getAvatarManager();
 
-                $avatarDataNotify = new AvatarDataNotify();
+                $avatarDataNotify = new AvatarDataNotify;
                 $avatarDataNotify->setAvatarList(
                     $avatarManager->getAvatarsInfo()
                 );
@@ -109,13 +124,12 @@ class LoginManager
 
                 $session->getPlayer()->teleport(
                     3,
-                    new Vector3(1, 300, -1),
+                    new Vector3(-387.3, 219.0, 2456.3),
                     EnterType::ENTER_TYPE_SELF,
                     EnterReason::LOGIN,
                     true
                 );
-
-                $rsp = new PlayerLoginRsp();
+                $rsp = new PlayerLoginRsp;
                 $rsp->setGameBiz("hk4e_global");
                 $rsp->setIsScOpen(false);
 

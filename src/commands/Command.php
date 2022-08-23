@@ -16,7 +16,8 @@ abstract class Command
         string $description,
         string $usage,
         array $aliases = []
-    ) {
+    )
+    {
         $this->name = $name;
         $this->description = $description;
         $this->usage = $usage;

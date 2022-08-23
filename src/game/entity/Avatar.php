@@ -24,6 +24,10 @@ use TeyvatPS\utils\AvatarUtils;
 
 class Avatar extends Entity
 {
+
+    //TODO: proper implementation for avatar inventory
+    private SceneWeaponInfo $weaponInfo;
+
     private AvatarInfo $avatarInfo;
 
     /**
@@ -47,7 +51,10 @@ class Avatar extends Entity
         Vector3 $motion,
         Vector3 $rotation = null,
         Vector3 $speed = null
-    ) {
+    )
+    {
+        $this->weaponInfo = new SceneWeaponInfo;
+        $this->weaponInfo->setEntityId($world->getNextEntityId(ProtEntityType::PROT_ENTITY_TYPE_WEAPON))->setGuid($world->getNextGuid())->setItemId(13509)->setLevel(90)->setPromoteLevel(6)->setGadgetId(50011406)->setAbilityInfo(new AbilitySyncStateInfo);
         $this->avatarInfo = $avatarInfo;
         $this->id = $world->getNextEntityId(
             ProtEntityType::PROT_ENTITY_TYPE_AVATAR
@@ -102,19 +109,19 @@ class Avatar extends Entity
             35 => 0xF8B2753E,
             36 => 0xFD8E4031,
             37 => 0xFFC8EAB3,
+            38 => AvatarUtils::getAbilityHash("SceneObj_Toys_SeelieCreater_05")
         ];
 
         foreach ($defaults as $hash) {
-            $this->embryos[] = (new AbilityEmbryo())->setAbilityId($embryoId++)
+            $this->embryos[] = (new AbilityEmbryo)->setAbilityId($embryoId++)
                 ->setAbilityNameHash($hash);
         }
-
         foreach (
             ExcelManager::getEmbryosFromId(
                 $this->avatarInfo->getAvatarId()
             ) as $embryo
         ) {
-            $this->embryos[] = (new AbilityEmbryo())->setAbilityId($embryoId++)
+            $this->embryos[] = (new AbilityEmbryo)->setAbilityId($embryoId++)
                 ->setAbilityNameHash(
                     AvatarUtils::getAbilityHash($embryo->getAbilityName())
                 );
@@ -157,20 +164,21 @@ class Avatar extends Entity
 
     public function getSceneTeamAvatar(
         bool $isPlayerCurAvatar = true
-    ): SceneTeamAvatar {
-        $sceneTeamAvatar = new SceneTeamAvatar();
+    ): SceneTeamAvatar
+    {
+        $sceneTeamAvatar = new SceneTeamAvatar;
         $sceneTeamAvatar->setSceneId($this->getWorld()->getSceneId());
         $sceneTeamAvatar->setPlayerUid(Config::getUid());
         $sceneTeamAvatar->setAvatarGuid($this->getGuid());
         $sceneTeamAvatar->setEntityId($this->getId());
-        $sceneTeamAvatar->setAvatarAbilityInfo(new AbilitySyncStateInfo());
+        $sceneTeamAvatar->setAvatarAbilityInfo(new AbilitySyncStateInfo);
         $sceneTeamAvatar->setWeaponGuid(2785642601942876162);
         $sceneTeamAvatar->setWeaponEntityId(100664575);
-        $sceneTeamAvatar->setWeaponAbilityInfo(new AbilitySyncStateInfo());
+        $sceneTeamAvatar->setWeaponAbilityInfo(new AbilitySyncStateInfo);
         $sceneTeamAvatar->setIsPlayerCurAvatar($isPlayerCurAvatar);
         $sceneTeamAvatar->setSceneEntityInfo($this->getSceneEntityInfo());
         $sceneTeamAvatar->setAbilityControlBlock(
-            (new AbilityControlBlock())->setAbilityEmbryoList($this->embryos)
+            (new AbilityControlBlock)->setAbilityEmbryoList($this->embryos)
         );
 
         return $sceneTeamAvatar;
@@ -187,7 +195,7 @@ class Avatar extends Entity
         ]);
         $fightProp = [];
         foreach ($this->fightProps as $key => $value) {
-            $fightProp[] = (new FightPropPair())->setPropValue($value)
+            $fightProp[] = (new FightPropPair)->setPropValue($value)
                 ->setPropType($key);
         }
         $sceneEntityInfo->setFightPropList($fightProp);
@@ -198,14 +206,14 @@ class Avatar extends Entity
 
     public function getAvatarPropPair(int $prop): PropPair
     {
-        return (new PropPair())->setType($prop)->setPropValue(
+        return (new PropPair)->setType($prop)->setPropValue(
             $this->props[$prop]
         );
     }
 
     public function getSceneAvatarInfo(): SceneAvatarInfo
     {
-        $sceneAvatarInfo = new SceneAvatarInfo();
+        $sceneAvatarInfo = new SceneAvatarInfo;
         $sceneAvatarInfo->setGuid($this->getGuid());
         $sceneAvatarInfo->setUid(Config::getUid());
         $sceneAvatarInfo->setWearingFlycloakId(140001);
@@ -227,28 +235,21 @@ class Avatar extends Entity
         $sceneAvatarInfo->setAvatarId($this->avatarInfo->getAvatarId());
         $sceneAvatarInfo->setPeerId(1);
         $sceneAvatarInfo->setEquipIdList([11406]);
-        $sceneAvatarInfo->setWeapon(
-            (new SceneWeaponInfo())->setEntityId(100664575)->setGuid(
-                2785642601942876162
-            )->setItemId(11406)->setLevel(90)->setPromoteLevel(6)->setGadgetId(
-                50011406
-            )->setAbilityInfo(new AbilitySyncStateInfo())
-        );
+        $sceneAvatarInfo->setWeapon($this->weaponInfo);
         $sceneAvatarInfo->setTeamResonanceList(
             $this->avatarInfo->getTeamResonanceList()
         );
 
-        //$sceneAvatarInfo->setExcelInfo($this->avatarInfo->getExcelInfo());
         return $sceneAvatarInfo;
     }
 
     public function getAvatarEnterSceneInfo(): AvatarEnterSceneInfo
     {
-        $avatarEnterSceneInfo = new AvatarEnterSceneInfo();
+        $avatarEnterSceneInfo = new AvatarEnterSceneInfo;
         $avatarEnterSceneInfo->setAvatarGuid($this->getGuid());
         $avatarEnterSceneInfo->setAvatarEntityId($this->getId());
-        $avatarEnterSceneInfo->setWeaponEntityId(100664575);
-        $avatarEnterSceneInfo->setWeaponGuid(2785642601942876162);
+        $avatarEnterSceneInfo->setWeaponEntityId($this->weaponInfo->getEntityId());
+        $avatarEnterSceneInfo->setWeaponGuid($this->weaponInfo->getGuid());
 
         return $avatarEnterSceneInfo;
     }

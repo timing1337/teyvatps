@@ -24,19 +24,20 @@ class DataPacket
         string|int $id = null,
         Message $data = null,
         PacketHead $header = null
-    ) {
+    )
+    {
         if ($header === null) {
-            $this->header = new PacketHead();
+            $this->header = new PacketHead;
         } else {
             $this->header = $header;
         }
         if (is_string($id)) {
             $this->id = ProtocolDictonary::getProtocolIdFromName($id);
-            $this->data = new $id();
+            $this->data = new $id;
         } else {
             if (is_int($id)) {
                 $this->id = $id;
-                $this->data = new ($this->getName())();
+                $this->data = new ($this->getName());
             }
         }
         if ($data !== null) {
@@ -70,13 +71,13 @@ class DataPacket
             ) {
                 return false;
             }
-            $this->header = new PacketHead();
+            $this->header = new PacketHead;
             $this->header->mergeFromString(
                 $buffer->slice(10, 10 + $metadataSize)->toString()
             );
             $name = $this->getName();
-
             if ($name === "unknown") {
+                Logger::notice("Unknown packet id: " . $this->id);
                 return false;
             }
             if (!class_exists($this->getName())) {
@@ -85,7 +86,7 @@ class DataPacket
                 return false;
             }
 
-            $this->data = new ($this->getName())();
+            $this->data = new ($this->getName());
             $this->data->mergeFromString(
                 $buffer->slice(
                     10 + $metadataSize,

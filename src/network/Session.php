@@ -24,14 +24,13 @@ class Session
     private Player $player;
     private World $world;
 
-    private bool $requireEncryption = true;
-
     public function __construct(
         string $address,
         int $port,
         int $conv,
         int $token
-    ) {
+    )
+    {
         $this->address = $address;
         $this->port = $port;
         $this->conv = $conv;
@@ -62,23 +61,15 @@ class Session
                 "Sent packet " . Logger::YELLOW . "{$packet->getName()}"
             );
         }
-        $encode = $packet->encode();
-        if ($this->requireEncryption) {
-            //2.7 and lower
-            Crypto::xorBuffer($encode, $this->getKey());
-        } else {
-            //2.7.50 and higher (probably?)
-            if ($this->isInitialized()) {
-                Crypto::xorBuffer($encode, Crypto::$secretKey);
-            }
-        }
-        $this->kcp->send($encode);
+        $packet = $packet->encode();
+        Crypto::xorBuffer($packet, $this->getKey());
+        $this->kcp->send($packet);
     }
 
     public function getKey(): Buffer
     {
         if (!$this->isInitialized) {
-            return Crypto::$ec2bKey;
+            return Crypto::$dispatchKey;
         } else {
             return Crypto::$secretKey;
         }
@@ -97,7 +88,7 @@ class Session
 
     public function disconnect(): void
     {
-        $disconnect = new Handshake();
+        $disconnect = new Handshake;
         $disconnect->start = Handshake::DISCONNECT_START;
         $disconnect->end = Handshake::DISCONNECT_END;
         NetworkServer::getServer()->send(
@@ -116,21 +107,12 @@ class Session
                 break;
             }
             $decrypted = $buffer->slice(0, $read);
-            $packet = new DataPacket();
+            Crypto::xorBuffer($decrypted, $this->getKey());
+            $packet = new DataPacket;
             if ($packet->decode($decrypted)) {
                 $packets[] = $packet;
-                if ($this->requireEncryption) {
-                    $this->requireEncryption = false;
-                }
-            } else {
-                Crypto::xorBuffer($decrypted, $this->getKey());
-                $packet = new DataPacket();
-                if ($packet->decode($decrypted)) {
-                    $packets[] = $packet;
-                }
             }
         }
-
         return $packets;
     }
 

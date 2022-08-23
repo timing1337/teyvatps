@@ -8,24 +8,38 @@ use TeyvatPS\FolderConstants;
 
 class Crypto
 {
-    public static Buffer $ec2bKey;
+    public static Buffer $dispatchKey;
+    public static Buffer $dispatchSeed;
     public static Buffer $secretKey;
-    public static Buffer $ec2bBin;
+
     public static OpenSSLAsymmetricKey $publicKey;
+    public static OpenSSLAsymmetricKey $privateKey;
+
+    public static OpenSSLAsymmetricKey $publicSigningKey;
+    public static OpenSSLAsymmetricKey $privateSigningKey;
 
     public static function init(): void
     {
         self::$publicKey = openssl_pkey_get_public(
             file_get_contents(FolderConstants::DATA_FOLDER . 'rsa/public.key')
         );
-        self::$ec2bKey = Buffer::new(
-            file_get_contents(FolderConstants::DATA_FOLDER . 'ec2b/ec2b.key')
+        self::$privateKey = openssl_get_privatekey(
+            file_get_contents(FolderConstants::DATA_FOLDER . 'rsa/private.key')
+        );
+        self::$publicSigningKey = openssl_get_publickey(
+            file_get_contents(FolderConstants::DATA_FOLDER . 'rsa/signing_public.key')
+        );
+        self::$privateSigningKey = openssl_get_privatekey(
+            file_get_contents(FolderConstants::DATA_FOLDER . 'rsa/signing_private.key')
+        );
+        self::$dispatchKey = Buffer::new(
+            file_get_contents(FolderConstants::DATA_FOLDER . 'ec2b/dispatchKey.bin')
+        );
+        self::$dispatchSeed = Buffer::new(
+            file_get_contents(FolderConstants::DATA_FOLDER . 'ec2b/dispatchSeed.bin')
         );
         self::$secretKey = Buffer::new(
-            file_get_contents(FolderConstants::DATA_FOLDER . 'ec2b/secret.key')
-        );
-        self::$ec2bBin = Buffer::new(
-            file_get_contents(FolderConstants::DATA_FOLDER . 'ec2b/ec2b.bin')
+            file_get_contents(FolderConstants::DATA_FOLDER . 'ec2b/secretKey.bin')
         );
     }
 

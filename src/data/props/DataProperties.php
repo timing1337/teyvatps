@@ -86,7 +86,7 @@ class DataProperties
         $rel = new ReflectionClass(self::class);
         $props = [];
         foreach ($rel->getConstants() as $prop) {
-            $props[$prop] = (new PropValue())->setType($prop)->setVal(0)
+            $props[$prop] = (new PropValue)->setType($prop)->setVal(0)
                 ->setIval(0);
         }
 

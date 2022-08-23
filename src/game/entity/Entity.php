@@ -29,7 +29,8 @@ class Entity
         Vector3 $motion,
         Vector3 $rotation = null,
         Vector3 $speed = null
-    ) {
+    )
+    {
         $this->world = $world;
         $this->motion = $motion;
         $this->rotation = ($rotation === null ? new Vector3(0, 0, 0)
@@ -40,24 +41,24 @@ class Entity
 
     public function getSceneEntityInfo(): SceneEntityInfo
     {
-        $sceneEntityInfo = new SceneEntityInfo();
+        $sceneEntityInfo = new SceneEntityInfo;
         $sceneEntityInfo->setEntityId($this->getId());
         $sceneEntityInfo->setLifeState(1);
         $sceneEntityInfo->setMotionInfo(
-            (new MotionInfo())->setPos($this->motion->toProto())->setRot(
+            (new MotionInfo)->setPos($this->motion->toProto())->setRot(
                 $this->rotation->toProto()
             )->setSpeed($this->speed->toProto())->setState($this->state)
         );
         $sceneEntityInfo->setAnimatorParaList([]);
-        $entityAuthorityInfo = new EntityAuthorityInfo();
+        $entityAuthorityInfo = new EntityAuthorityInfo;
         $entityAuthorityInfo->setAiInfo(
-            (new SceneEntityAiInfo())->setIsAiOpen(true)
+            (new SceneEntityAiInfo)->setIsAiOpen(true)
         );
-        $entityAuthorityInfo->setAbilityInfo(new AbilitySyncStateInfo());
-        $entityAuthorityInfo->setBornPos(new Vector());
+        $entityAuthorityInfo->setAbilityInfo(new AbilitySyncStateInfo);
+        $entityAuthorityInfo->setBornPos(new Vector);
         $entityAuthorityInfo->setPoseParaList([]);
         $entityAuthorityInfo->setRendererChangedInfo(
-            new EntityRendererChangedInfo()
+            new EntityRendererChangedInfo
         );
 
         $sceneEntityInfo->setEntityAuthorityInfo($entityAuthorityInfo);

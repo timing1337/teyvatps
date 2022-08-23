@@ -12,6 +12,11 @@ use React\Datagram\Factory;
 use React\Datagram\Socket;
 use TeyvatPS\commands\CommandManager;
 use TeyvatPS\Config;
+use TeyvatPS\game\activities\ActivityManager;
+use TeyvatPS\game\quests\QuestManager;
+use TeyvatPS\game\reputation\ReputationManager;
+use TeyvatPS\game\shop\ShopManager;
+use TeyvatPS\game\windy\WindyManager;
 use TeyvatPS\managers\InventoryManager;
 use TeyvatPS\managers\LoginManager;
 use TeyvatPS\managers\PlayerManager;
@@ -52,7 +57,7 @@ class NetworkServer
     {
         self::$recv = Buffer::allocate(0x20000);
 
-        $factory = new Factory();
+        $factory = new Factory;
         $factory->createServer(Config::getHost() . ":" . Config::getPort())
             ->then(function (Socket $server) {
                 $server->on('message', [self::class, 'onReceived']);
@@ -62,7 +67,7 @@ class NetworkServer
         self::registerProcessor(
             PingReq::class,
             function (Session $session, PingReq $req): PingRsp {
-                return (new PingRsp())->setClientTime($req->getClientTime());
+                return (new PingRsp)->setClientTime($req->getClientTime());
             }
         );
 
@@ -73,12 +78,14 @@ class NetworkServer
         InventoryManager::init();
         TeamManager::init();
         CommandManager::init();
+        QuestManager::init();
     }
 
     public static function registerProcessor(
         string $class,
         Closure $processor
-    ): void {
+    ): void
+    {
         self::$processors[$class][] = $processor;
     }
 
@@ -86,9 +93,10 @@ class NetworkServer
         string $message,
         string $address,
         Socket $socket
-    ): void {
+    ): void
+    {
         $buffer = Buffer::new($message);
-        $recvHandshake = new Handshake();
+        $recvHandshake = new Handshake;
         [$ip, $port] = explode(':', $address);
         $port = (int)$port; //kek
         if ($recvHandshake->decode($buffer)) {
@@ -102,7 +110,7 @@ class NetworkServer
                 );
                 $conv = 0x96969696; //Hardcoded
                 $token = 0x42424242;
-                $sndHandshake = new Handshake();
+                $sndHandshake = new Handshake;
                 $sndHandshake->start = Handshake::ESTABLISH_START;
                 $sndHandshake->param1 = $conv;
                 $sndHandshake->param2 = $token;
@@ -118,10 +126,11 @@ class NetworkServer
         } else {
             $session = self::getSession($ip, $port);
             if (!$session instanceof Session) {
-                $disconnect = new Handshake();
+                $disconnect = new Handshake;
                 $disconnect->start = Handshake::DISCONNECT_START;
                 $disconnect->end = Handshake::DISCONNECT_END;
                 $socket->send($disconnect->encode()->toString(), $address);
+
                 return;
             }
             $read = $session->getKcp()->input($buffer);

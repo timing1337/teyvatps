@@ -29,7 +29,8 @@ class Monster extends Entity
         Vector3 $motion,
         Vector3 $rotation = null,
         Vector3 $speed = null
-    ) {
+    )
+    {
         $this->id = $world->getNextEntityId(
             ProtEntityType::PROT_ENTITY_TYPE_MONSTER
         );
@@ -52,13 +53,12 @@ class Monster extends Entity
             ),
         ]);
         $sceneEntityInfo->setFightPropList($this->fightProps);
-
         return $sceneEntityInfo;
     }
 
     public function getSceneMonsterInfo(): SceneMonsterInfo
     {
-        $sceneMonsterInfo = new SceneMonsterInfo();
+        $sceneMonsterInfo = new SceneMonsterInfo;
         $sceneMonsterInfo->setMonsterId($this->monsterData->getId());
         $sceneMonsterInfo->setAffixList($this->monsterData->getAffix());
         $sceneMonsterInfo->setAuthorityPeerId(1);
@@ -70,15 +70,14 @@ class Monster extends Entity
         $sceneMonsterInfo->setSpecialNameId(40);
         $equips = [];
         foreach ($this->monsterData->getEquips() as $equip) {
-            $equips[] = (new SceneWeaponInfo())->setGadgetId($equip)
-                ->setAbilityInfo(new AbilitySyncStateInfo())->setEntityId(
+            $equips[] = (new SceneWeaponInfo)->setGadgetId($equip)
+                ->setAbilityInfo(new AbilitySyncStateInfo)->setEntityId(
                     $this->getWorld()->getNextEntityId(
                         ProtEntityType::PROT_ENTITY_TYPE_WEAPON
                     )
                 );
         }
         $sceneMonsterInfo->setWeaponList($equips);
-
         return $sceneMonsterInfo;
     }
 }

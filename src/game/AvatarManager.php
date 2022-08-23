@@ -78,7 +78,8 @@ class AvatarManager
         int $index,
         array $avatars,
         bool $requestTeamChange = true
-    ): void {
+    ): void
+    {
         $this->teams[$index] = $avatars;
         if ($requestTeamChange) {
             $this->updateTeam();
@@ -89,10 +90,10 @@ class AvatarManager
     {
         $curTeam = $this->getTeam($this->getCurTeamIndex());
 
-        $avatarTeamUpdateNotify = new AvatarTeamUpdateNotify();
+        $avatarTeamUpdateNotify = new AvatarTeamUpdateNotify;
         $avatarTeamUpdateNotify->setAvatarTeamMap($this->toTeamMap());
 
-        $sceneTeamUpdateNotify = new SceneTeamUpdateNotify();
+        $sceneTeamUpdateNotify = new SceneTeamUpdateNotify;
         $sceneTeamUpdateNotify->setSceneTeamAvatarList(
             array_map(function (int $guid): SceneTeamAvatar {
                 $avatar = $this->getAvatarByGuid($guid);
@@ -133,7 +134,7 @@ class AvatarManager
     {
         $teamsMap = [];
         for ($i = 1; $i < 5; $i++) {
-            $teamsMap[$i] = (new AvatarTeam())->setAvatarGuidList(
+            $teamsMap[$i] = (new AvatarTeam)->setAvatarGuidList(
                 $this->getTeam($i)
             );
         }
@@ -169,10 +170,10 @@ class AvatarManager
 
         $old->setState(MotionState::MOTION_STATE_STANDBY);
 
-        $this->session->getWorld()->killEntity($old);
+        $this->session->getWorld()->killEntity($old, \VisionType::VISION_TYPE_REPLACE);
 
         $this->curAvatarGuid = $curAvatarGuid;
 
-        $this->session->getWorld()->addEntity($new);
+        $this->session->getWorld()->addEntity($new, \VisionType::VISION_TYPE_REPLACE);
     }
 }

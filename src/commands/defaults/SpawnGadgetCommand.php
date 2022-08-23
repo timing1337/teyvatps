@@ -25,10 +25,12 @@ class SpawnGadgetCommand extends Command
 
             return;
         }
+        $pos = $player->getPosition();
+        $pos->setY($pos->getY() + 1);
         $gadgetEntity = new Gadget(
             $arguments[0],
             $player->getSession()->getWorld(),
-            $player->getPosition()
+            $pos
         );
         $player->getSession()->getWorld()->addEntity($gadgetEntity);
         $player->sendMessage(

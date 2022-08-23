@@ -12,7 +12,8 @@ class AbilityEmbryo
         string $abilityId,
         string $abilityName,
         string $abilityOverride
-    ) {
+    )
+    {
         $this->abilityId = $abilityId;
         $this->abilityName = $abilityName;
         $this->abilityOverride = $abilityOverride;

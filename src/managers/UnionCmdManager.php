@@ -48,28 +48,22 @@ class UnionCmdManager
                 }
             }
         );
-
         NetworkServer::registerProcessor(
             CombatInvocationsNotify::class,
             function (
                 Session $session,
                 CombatInvocationsNotify $request
-            ): void {
+            ): CombatInvocationsNotify {
                 foreach ($request->getInvokeList() as $invoke) {
                     switch ($invoke->getArgumentType()) {
                         case CombatTypeArgument::COMBAT_TYPE_ARGUMENT_EVT_BEING_HIT:
-                            $hitInfo = (new EvtBeingHitInfo());
+                            $hitInfo = (new EvtBeingHitInfo);
                             $hitInfo->parseFromStream(
                                 new CodedInputStream($invoke->getCombatData())
                             );
-                            Logger::log(
-                                'Received hit info: '
-                                . $hitInfo->serializeToJsonString()
-                            );
-
-                            return;
+                            break;
                         case CombatTypeArgument::COMBAT_TYPE_ARGUMENT_ENTITY_MOVE:
-                            $moveInfo = (new EntityMoveInfo());
+                            $moveInfo = (new EntityMoveInfo);
                             $moveInfo->parseFromStream(
                                 new CodedInputStream($invoke->getCombatData())
                             );
@@ -77,10 +71,10 @@ class UnionCmdManager
                                 $moveInfo->getEntityId()
                             );
                             if (!$entity instanceof Entity) {
-                                return;
+                                break;
                             }
                             if ($moveInfo->getMotionInfo()->getPos() === null) {
-                                return;
+                                break;
                             }
                             if ($moveInfo->getMotionInfo()->getState()
                                 === MotionState::MOTION_STATE_STANDBY
@@ -89,12 +83,15 @@ class UnionCmdManager
                                     MotionState::MOTION_STATE_STANDBY
                                 );
 
-                                return;
+                                break;
                             }
                             $entity->setState(
                                 $moveInfo->getMotionInfo()->getState()
                             );
                             $rotation = $moveInfo->getMotionInfo()->getRot();
+                            if($rotation === null){
+                                $rotation = (new \Vector())->setX(0)->setY(0)->setZ(0);
+                            }
                             $entity->setRotation(
                                 new Vector3(
                                     $rotation->getX(),
@@ -103,6 +100,9 @@ class UnionCmdManager
                                 )
                             );
                             $speed = $moveInfo->getMotionInfo()->getSpeed();
+                            if($speed === null){
+                                $speed = (new \Vector())->setX(0)->setY(0)->setZ(0);
+                            }
                             $entity->setSpeed(
                                 new Vector3(
                                     $speed->getX(),
@@ -128,11 +128,12 @@ class UnionCmdManager
                                 );
                             }
 
-                            return;
+                            break;
                         default:
-                            return;
+                            break;
                     }
                 }
+                return $request;
             }
         );
     }

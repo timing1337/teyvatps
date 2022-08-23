@@ -10,7 +10,28 @@ class Vector3
         private float $x = 0,
         private float $y = 0,
         private float $z = 0
-    ) {
+    )
+    {
+    }
+
+    public static function fromProto(Vector $vector): self
+    {
+        return (new self($vector->getX(), $vector->getY(), $vector->getZ()));
+    }
+
+    public function getX(): float
+    {
+        return $this->x;
+    }
+
+    public function getY(): float
+    {
+        return $this->y;
+    }
+
+    public function getZ(): float
+    {
+        return $this->z;
     }
 
     public function compare(Vector3 $vector): bool
@@ -19,13 +40,9 @@ class Vector3
             && $this->z === $vector->z);
     }
 
-    public static function fromProto(Vector $vector): self{
-        return (new self($vector->getX(), $vector->getY(), $vector->getZ()));
-    }
-
     public function toProto(): Vector
     {
-        return (new Vector())->setX($this->x)->setY($this->y)->setZ($this->z);
+        return (new Vector)->setX($this->x)->setY($this->y)->setZ($this->z);
     }
 
     public function setZ(float $z): void
@@ -46,20 +63,5 @@ class Vector3
     public function __toString(): string
     {
         return sprintf('Vector3(%f, %f, %f)', $this->x, $this->y, $this->z);
-    }
-
-    public function getX(): float
-    {
-        return $this->x;
-    }
-
-    public function getY(): float
-    {
-        return $this->y;
-    }
-
-    public function getZ(): float
-    {
-        return $this->z;
     }
 }

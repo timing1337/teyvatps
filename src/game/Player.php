@@ -43,10 +43,16 @@ class Player
         $this->setProp(DataProperties::PROP_MAX_STAMINA, 24000);
         $this->setProp(DataProperties::PROP_PLAYER_LEVEL, Config::getLevel());
         $this->setProp(DataProperties::PROP_PLAYER_WORLD_LEVEL, 8);
+        $this->setProp(DataProperties::PROP_PLAYER_HCOIN, 10000);
+        $this->setProp(DataProperties::PROP_PLAYER_SCOIN, 10000);
+
     }
 
     public function setProp(int $prop, int $value): void
     {
+        if(!isset($this->propMap[$prop])){
+            $this->propMap[$prop] = (new PropValue())->setType($prop);
+        }
         $this->propMap[$prop]->setVal($value)->setIval($value);
     }
 
@@ -85,8 +91,9 @@ class Player
         Vector3 $position,
         int $type = EnterType::ENTER_TYPE_SELF,
         int $enterReason = EnterReason::LOGIN
-    ): void {
-        $playerEnterSceneNotify = new PlayerEnterSceneNotify();
+    ): void
+    {
+        $playerEnterSceneNotify = new PlayerEnterSceneNotify;
         $playerEnterSceneNotify->setSceneId($sceneId);
         $playerEnterSceneNotify->setPos($position->toProto());
         $playerEnterSceneNotify->setSceneBeginTime(time() * 1000);
@@ -131,9 +138,9 @@ class Player
 
     public function sendMessage(string $text, int $sender = 69): void
     {
-        $notify = new PrivateChatNotify();
+        $notify = new PrivateChatNotify;
         $notify->setChatInfo(
-            (new ChatInfo())->setText($text)->setUid($sender)->setToUid(
+            (new ChatInfo)->setText($text)->setUid($sender)->setToUid(
                 Config::getUid()
             )
         );

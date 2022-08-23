@@ -38,7 +38,7 @@ class Config
         self::$namecard = $config['player']['namecard'];
         self::$achivements = $config['player']['achivements'];
         self::$signature = $config['player']['signature'];
-        self::$avatarId = new ProfilePicture();
+        self::$avatarId = new ProfilePicture;
         self::$avatarId->setAvatarId($config['player']['avatarId']);
 
         self::$commandPrefix = $config['commands']['prefix'];
@@ -46,7 +46,7 @@ class Config
 
     public static function getPlayerSocialDetail(): SocialDetail
     {
-        $social = new SocialDetail();
+        $social = new SocialDetail;
         $social->setUid(self::getUid());
         $social->setNickname(self::getName());
         $social->setLevel(self::getLevel());

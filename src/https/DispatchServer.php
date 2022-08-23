@@ -72,10 +72,10 @@ class DispatchServer
         self::$routes['/query_region_list'] = function (
             ServerRequestInterface $request
         ) {
-            $rsp = new QueryRegionListHttpRsp();
+            $rsp = new QueryRegionListHttpRsp;
             $rsp->setRegionList(
                 [
-                    (new RegionSimpleInfo())
+                    (new RegionSimpleInfo)
                         ->setType('DEV_PUBLIC')
                         ->setName('os_teyvatps')
                         ->setTitle('TeyvatPS')
@@ -86,9 +86,9 @@ class DispatchServer
             $customConfig = Buffer::new(
                 '{\"sdkenv\":\"2\",\"checkdevice\":\"false\",\"loadPatch\":\"false\",\"showexception\":\"false\",\"regionConfig\":\"pm|fk|add\",\"downloadMode\":\"0\"}'
             );
-            Crypto::xorBuffer($customConfig, Crypto::$ec2bKey);
+            Crypto::xorBuffer($customConfig, Crypto::$dispatchKey);
 
-            $rsp->setClientSecretKey(Crypto::$ec2bBin->toString());
+            $rsp->setClientSecretKey(Crypto::$dispatchSeed->toString());
             $rsp->setClientCustomConfigEncrypted($customConfig->toString());
 
             return new Response(
@@ -103,42 +103,33 @@ class DispatchServer
         ) {
             $config = $request->getQueryParams();
 
-            $rsp = new QueryCurrRegionHttpRsp();
-            $regionInfo = new RegionInfo();
+            $rsp = new QueryCurrRegionHttpRsp;
+            $regionInfo = new RegionInfo;
             $regionInfo->setGateserverIp(Config::getHost());
             $regionInfo->setGateserverPort(Config::getPort());
-            $regionInfo->setSecretKey(Crypto::$ec2bBin->toString());
+            $regionInfo->setSecretKey(Crypto::$dispatchSeed->toString());
 
             $customConfig = Buffer::new(
                 '{"coverSwitch":[8],"perf_report_config":"http:\/\/127.0.0.1:80\/config\/verify","perf_report_record_url":"http:\/\/127.0.0.1:80\/dataUpload"}'
             );
-            Crypto::xorBuffer($customConfig, Crypto::$ec2bKey);
-
+            Crypto::xorBuffer($customConfig, Crypto::$dispatchKey);
             $rsp->setRegionInfo($regionInfo);
-            $rsp->setClientRegionCustomConfigEncrypted(
-                $customConfig->toString()
-            );
-            if (isset($config['version'])
-                && (str_contains(
-                    $config['version'],
-                    "2.7.5"
-                )
-                    || str_contains($config['version'], "2.8.5"))
-            ) {
-                $regionInfo->setSecretKey("0");
-                openssl_public_encrypt(
-                    $rsp->serializeToString(),
-                    $encrypted,
-                    Crypto::$publicKey,
-                    OPENSSL_PKCS1_PADDING
-                );
+            $rsp->setClientRegionCustomConfigEncrypted($customConfig->toString());
+            if (isset($config['version']) && (str_contains($config['version'], "2.7.5") || str_contains($config['version'], "2.8.5"))) {
+                $rspBuffer = Buffer::new($rsp->serializeToString());
+                $finalBuffer = "";
+                foreach ($rspBuffer->chunks(256 - 11) as $chunk) {
+                    openssl_public_encrypt($chunk->toString(), $encrypted, Crypto::$publicKey, OPENSSL_PKCS1_PADDING);
+                    $finalBuffer .= $encrypted;
+                }
+                openssl_sign($rsp->serializeToString(), $signature, Crypto::$privateSigningKey, OPENSSL_ALGO_SHA256);
 
                 return new Response(
                     200,
                     ["Content-Type" => "application/json"],
                     json_encode([
-                        "content" => base64_encode($encrypted),
-                        "sign" => base64_encode("hello"),
+                        "content" => base64_encode($finalBuffer),
+                        "sign" => base64_encode($signature),
                     ])
                 );
             } else {
@@ -171,51 +162,51 @@ class DispatchServer
 
         self::$routes['/hk4e_global/combo/granter/api/compareProtocolVersion']
             = function (
-                ServerRequestInterface $request
-            ) {
-                return new Response(
-                    200,
-                    ["Content-Type" => "application/json"],
-                    json_encode(
-                        [
-                            "retcode" => 0,
-                            "message" => "OK",
-                            "data" => [
-                                "modified" => true,
-                                "protocol" => [
-                                    "id" => 0,
-                                    "app_id" => 4,
-                                    "language" => "vi",
-                                    "user_proto" => "",
-                                    "priv_proto" => "",
-                                    "major" => 4,
-                                    "minimum" => 0,
-                                    "create_time" => "0",
-                                    "teenager_proto" => "",
-                                    "third_proto" => "",
-                                ],
-                            ],
-                        ]
-                    )
-                );
-            };
-
-        self::$routes['/hk4e_global/combo/granter/login/beforeVerify']
-            = function (ServerRequestInterface $request) {
-                return new Response(
-                    200,
-                    ["Content-Type" => "application/json"],
-                    json_encode([
+            ServerRequestInterface $request
+        ) {
+            return new Response(
+                200,
+                ["Content-Type" => "application/json"],
+                json_encode(
+                    [
                         "retcode" => 0,
                         "message" => "OK",
                         "data" => [
-                            "is_heartbeat_required" => false,
-                            "is_realname_required" => false,
-                            "is_guardian_required" => false,
+                            "modified" => true,
+                            "protocol" => [
+                                "id" => 0,
+                                "app_id" => 4,
+                                "language" => "vi",
+                                "user_proto" => "",
+                                "priv_proto" => "",
+                                "major" => 4,
+                                "minimum" => 0,
+                                "create_time" => "0",
+                                "teenager_proto" => "",
+                                "third_proto" => "",
+                            ],
                         ],
-                    ])
-                );
-            };
+                    ]
+                )
+            );
+        };
+
+        self::$routes['/hk4e_global/combo/granter/login/beforeVerify']
+            = function (ServerRequestInterface $request) {
+            return new Response(
+                200,
+                ["Content-Type" => "application/json"],
+                json_encode([
+                    "retcode" => 0,
+                    "message" => "OK",
+                    "data" => [
+                        "is_heartbeat_required" => false,
+                        "is_realname_required" => false,
+                        "is_guardian_required" => false,
+                    ],
+                ])
+            );
+        };
 
         self::$routes['/hk4e_global/combo/granter/login/v2/login'] = function (
             ServerRequestInterface $request
@@ -303,16 +294,16 @@ class DispatchServer
 
         self::$routes['/admin/mi18n/plat_oversea/m2020030410/m2020030410-version.json']
             = function (
-                ServerRequestInterface $request
-            ) {
-                return new Response(
-                    200,
-                    ["Content-Type" => "application/json"],
-                    json_encode([
-                        "version" => "54",
-                    ])
-                );
-            };
+            ServerRequestInterface $request
+        ) {
+            return new Response(
+                200,
+                ["Content-Type" => "application/json"],
+                json_encode([
+                    "version" => "54",
+                ])
+            );
+        };
 
         self::$routes['/hk4e_global/combo/granter/api/getConfig'] = function (
             ServerRequestInterface $request

@@ -18,6 +18,7 @@ class PositionCommand extends Command
 
     public function onRun(Player $player, array $arguments): void
     {
-        // TODO: Implement onRun() method.
+        $pos = $player->getPosition();
+        $player->sendMessage("You are at {$pos->getX()} {$pos->getY()} {$pos->getZ()}");
     }
 }

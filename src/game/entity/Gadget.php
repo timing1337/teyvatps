@@ -20,7 +20,8 @@ class Gadget extends Entity
         Vector3 $motion,
         Vector3 $rotation = null,
         Vector3 $speed = null
-    ) {
+    )
+    {
         $this->id = $world->getNextEntityId(
             ProtEntityType::PROT_ENTITY_TYPE_GADGET
         );
@@ -42,17 +43,18 @@ class Gadget extends Entity
                 1
             ),
         ]);
+
         return $sceneEntityInfo;
     }
 
     public function getSceneGadgetInfo(): SceneGadgetInfo
     {
-        $sceneGadgetInfo = new SceneGadgetInfo();
+        $sceneGadgetInfo = new SceneGadgetInfo;
         $sceneGadgetInfo->setGadgetId($this->gadgetId);
         $sceneGadgetInfo->setAuthorityPeerId(1);
         $sceneGadgetInfo->setIsEnableInteract(false);
         $sceneGadgetInfo->setVehicleInfo(
-            (new VehicleInfo())->setCurStamina(240)->setOwnerUid(100)
+            (new VehicleInfo)->setCurStamina(240)->setOwnerUid(100)
         );
 
         return $sceneGadgetInfo;

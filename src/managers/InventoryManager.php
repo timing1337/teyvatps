@@ -28,7 +28,7 @@ class InventoryManager
                 Session $session,
                 GetAllUnlockNameCardReq $request
             ): GetAllUnlockNameCardRsp {
-                $rsp = new GetAllUnlockNameCardRsp();
+                $rsp = new GetAllUnlockNameCardRsp;
                 $rsp->setNameCardList(ExcelManager::getNamecards());
 
                 return $rsp;
@@ -38,7 +38,7 @@ class InventoryManager
         NetworkServer::registerProcessor(
             UseItemReq::class,
             function (Session $session, UseItemReq $request): UseItemRsp {
-                $rsp = new UseItemRsp();
+                $rsp = new UseItemRsp;
                 $rsp->setGuid($request->getGuid());
                 $rsp->setOptionIdx($request->getOptionIdx());
                 $rsp->setTargetGuid($request->getTargetGuid());
@@ -53,7 +53,7 @@ class InventoryManager
                 Session $session,
                 UseWidgetCreateGadgetReq $request
             ): UseWidgetCreateGadgetRsp {
-                $rsp = new UseWidgetCreateGadgetRsp();
+                $rsp = new UseWidgetCreateGadgetRsp;
                 $rsp->setMaterialId($request->getMaterialId());
 
                 return $rsp;
@@ -63,19 +63,19 @@ class InventoryManager
         NetworkServer::registerProcessor(
             SetWidgetSlotReq::class,
             function (Session $session, SetWidgetSlotReq $request): array {
-                $UseWidgetCreateGadgetRsp = new UseWidgetCreateGadgetRsp();
+                $UseWidgetCreateGadgetRsp = new UseWidgetCreateGadgetRsp;
                 $UseWidgetCreateGadgetRsp->setMaterialId(
                     $request->getMaterialId()
                 );
                 $widgetUseAttachAbilityGroupChangeNotify
-                    = new WidgetUseAttachAbilityGroupChangeNotify();
+                    = new WidgetUseAttachAbilityGroupChangeNotify;
                 $widgetUseAttachAbilityGroupChangeNotify->setMaterialId(
                     $request->getMaterialId()
                 );
                 $widgetUseAttachAbilityGroupChangeNotify->setIsAttach(true);
 
-                $widgetSlotNotify = new WidgetSlotChangeNotify();
-                $rsp = new SetWidgetSlotRsp();
+                $widgetSlotNotify = new WidgetSlotChangeNotify;
+                $rsp = new SetWidgetSlotRsp;
                 $rsp->setMaterialId($request->getMaterialId());
                 $rsp->setOp($request->getOp());
                 $rsp->setTagList($request->getTagList());
@@ -95,7 +95,7 @@ class InventoryManager
                             WidgetSlotOp::WIDGET_SLOT_OP_ATTACH
                         );
                         $widgetSlotNotify->setSlot(
-                            (new WidgetSlotData())->setMaterialId(
+                            (new WidgetSlotData)->setMaterialId(
                                 $request->getMaterialId()
                             )->setIsActive(true)
                         );

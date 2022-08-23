@@ -10,6 +10,7 @@ use SetUpAvatarTeamReq;
 use SetUpAvatarTeamRsp;
 use TeyvatPS\network\NetworkServer;
 use TeyvatPS\network\Session;
+use WearEquipReq;
 
 class TeamManager
 {
@@ -37,7 +38,7 @@ class TeamManager
                         $request->getCurAvatarGuid()
                     );
                 }
-                $rsp = new SetUpAvatarTeamRsp();
+                $rsp = new SetUpAvatarTeamRsp;
                 $rsp->setTeamId($request->getTeamId());
                 $rsp->setAvatarTeamGuidList($team);
                 $rsp->setCurAvatarGuid($request->getCurAvatarGuid());
@@ -55,7 +56,7 @@ class TeamManager
                 $session->getPlayer()->getAvatarManager()->setCurAvatarGuid(
                     $request->getGuid()
                 );
-                $rsp = new ChangeAvatarRsp();
+                $rsp = new ChangeAvatarRsp;
                 $rsp->setCurGuid($request->getGuid());
                 $rsp->setSkillId($request->getSkillId());
 
@@ -69,7 +70,7 @@ class TeamManager
                 Session $session,
                 ChooseCurAvatarTeamReq $req
             ): ChooseCurAvatarTeamRsp {
-                $rsp = new ChooseCurAvatarTeamRsp();
+                $rsp = new ChooseCurAvatarTeamRsp;
                 $rsp->setCurTeamId($req->getTeamId());
                 $session->getPlayer()->getAvatarManager()->setCurTeamIndex(
                     $req->getTeamId()
@@ -80,7 +81,6 @@ class TeamManager
                         $req->getTeamId()
                     )[0]
                 );
-
                 return $rsp;
             }
         );

@@ -34,8 +34,9 @@ class Handshake
         int $param2,
         int $data,
         int $end
-    ): self {
-        $handshake = new self();
+    ): self
+    {
+        $handshake = new self;
         $handshake->start = $start;
         $handshake->param1 = $param1;
         $handshake->param2 = $param2;

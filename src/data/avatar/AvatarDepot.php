@@ -17,7 +17,8 @@ class AvatarDepot
         array $subSkillMap,
         array $inherentProudSkillOpens,
         array $talentIds
-    ) {
+    )
+    {
         $this->skillMap = $skillMap;
         $this->subSkillMap = $subSkillMap;
         $this->inherentProudSkillOpens = $inherentProudSkillOpens;
@@ -39,11 +40,6 @@ class AvatarDepot
         return $this->inherentProudSkillOpens;
     }
 
-    public function getSubSkillMap(): array
-    {
-        return $this->subSkillMap;
-    }
-
     public function getDefaultSkillMap(): array
     {
         $skillMap = [];
@@ -51,7 +47,16 @@ class AvatarDepot
             $skillMap[$skill] = 1;
         }
 
+        foreach ($this->getSubSkillMap() as $subSkill) {
+            $skillMap[$subSkill] = 1;
+        }
+
         return $skillMap;
+    }
+
+    public function getSubSkillMap(): array
+    {
+        return $this->subSkillMap;
     }
 
     public function getDefaultProudSkillsMap(): array

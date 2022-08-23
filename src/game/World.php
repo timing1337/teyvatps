@@ -71,27 +71,32 @@ class World
         $this->sceneId = $sceneId;
     }
 
-    public function addEntity(Entity $entity): void
+    public function addEntity(Entity $entity, int $visionType = VisionType::VISION_TYPE_BORN): void
     {
-        $packet = new SceneEntityAppearNotify();
+        $packet = new SceneEntityAppearNotify;
         $packet->setEntityList([$entity->getSceneEntityInfo()]);
-        $packet->setAppearType(VisionType::VISION_TYPE_BORN);
+        $packet->setAppearType($visionType);
         $this->session->send(
             new DataPacket('SceneEntityAppearNotify', $packet)
         );
+        var_dump($packet->serializeToJsonString());
         $this->entities[$entity->getId()] = $entity;
     }
 
     public function killEntityById(int $id): void
     {
-        $this->killEntity($this->getEntityById($id));
+        $entity = $this->getEntityById($id);
+        if($entity == null){
+            return;
+        }
+        $this->killEntity($entity);
     }
 
-    public function killEntity(Entity $entity): void
+    public function killEntity(Entity $entity, int $visionType = VisionType::VISION_TYPE_DIE): void
     {
-        $packet = new SceneEntityDisappearNotify();
+        $packet = new SceneEntityDisappearNotify;
         $packet->setEntityList([$entity->getId()]);
-        $packet->setDisappearType(VisionType::VISION_TYPE_DIE);
+        $packet->setDisappearType($visionType);
         $this->session->send(
             new DataPacket('SceneEntityAppearNotify', $packet)
         );
